@@ -3,14 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        #car {
-            width: 50px;
-            height: 30px;
-            background-color: blue;
-            position: absolute;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css"> // 这是引用CSS文件的标签，用来设置页面的样式
 </head>
 <body>
 
@@ -25,56 +18,9 @@
 <button id="stopButton">停止</button>
 
 <div id="car"></div>
+<div id="bar"></div>
 
-<script>
-    const car = document.getElementById('car');
-    const velocityInput = document.getElementById('velocity');
-    const frictionInput = document.getElementById('friction');
-    const accelerateButton = document.getElementById('accelerateButton');
-    const decelerateButton = document.getElementById('decelerateButton');
-    const stopButton = document.getElementById('stopButton');
-
-    let velocity = parseFloat(velocityInput.value) || 5;
-    let friction = parseFloat(frictionInput.value) || 0.02;
-
-    function moveCar() {
-        let position = parseInt(getComputedStyle(car).left, 10);
-        if (position < window.innerWidth - car.clientWidth) {
-            // 车辆在可移动范围内
-            position += velocity;
-            if (velocity > 0) { // 只有速度大于0的时候才减去摩擦力
-                velocity -= friction;
-            }
-            car.style.left = position + 'px';
-            requestAnimationFrame(moveCar);
-        } else {
-            // 车辆停止
-            velocity = 0;
-        }
-    }
-
-    function accelerate() {
-        velocity += 1; // 可根据需要调整加速度
-    }
-
-    function decelerate() {
-        velocity -= 1; // 可根据需要调整减速度
-    }
-
-    function startAnimation() {
-        velocity = parseFloat(velocityInput.value) || 5;
-        friction = parseFloat(frictionInput.value) || 0.02;
-        moveCar();
-    }
-
-    accelerateButton.addEventListener('click', accelerate);
-    decelerateButton.addEventListener('click', decelerate);
-    stopButton.addEventListener('click', () => {
-        velocity = 0;
-    });
-
-    startAnimation();
-</script>
+<script src="script.js"></script> // 这是引用JavaScript文件的标签，用来实现页面的功能和交互
 
 </body>
 </html>

@@ -14,14 +14,23 @@
 </head>
 <body>
 
+<div>
+    初始速度: <input type="number" id="velocity" value="5">
+</div>
+<div>
+    摩擦力: <input type="number" id="friction" value="0.02">
+</div>
+<button id="startButton">开始</button>
+<button id="stopButton">停止</button>
+
 <div id="object"></div>
 
 <script>
     const object = document.getElementById('object');
-    let velocityInput = document.getElementById('velocity');
-    let frictionInput = document.getElementById('friction');
-    let startButton = document.getElementById('startButton');
-    let stopButton = document.getElementById('stopButton');
+    const velocityInput = document.getElementById('velocity');
+    const frictionInput = document.getElementById('friction');
+    const startButton = document.getElementById('startButton');
+    const stopButton = document.getElementById('stopButton');
 
     let velocity = parseFloat(velocityInput.value) || 5;
     let friction = parseFloat(frictionInput.value) || 0.02;
@@ -52,14 +61,6 @@
         velocity = 0;
     });
 </script>
-<div>
-    初始速度: <input type="number" id="velocity" value="5">
-</div>
-<div>
-    摩擦力: <input type="number" id="friction" value="0.02">
-</div>
-<button id="startButton">开始</button>
-<button id="stopButton">停止</button>
 
 </body>
 </html>

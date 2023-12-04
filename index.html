@@ -10,6 +10,18 @@
       background-color: blue;
       position: absolute;
     }
+    #buttons {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+    }
+    #speed {
+      width: 50px;
+      margin-left: 10px;
+    }
+    #distance {
+      margin-top: 10px;
+    }
   </style>
   <title>可调速度车辆模拟</title>
 </head>
@@ -17,12 +29,25 @@
 
 <div id="car"></div>
 
+<div id="buttons">
+  <button id="increase">加速</button>
+  <button id="decrease">刹车</button>
+  <input id="speed" type="number" value="5" min="-20" max="20"> 像素/帧
+</div>
+
+<div id="distance">车辆位移长度：0 像素</div>
+
 <script>
   let car = document.getElementById('car');
-  let speed = 5; // 初始速度，可以根据需要调整
+  let increase = document.getElementById('increase');
+  let decrease = document.getElementById('decrease');
+  let speed = document.getElementById('speed');
+  let distance = document.getElementById('distance');
+  let speedValue = 5; // 初始速度，可以根据需要调整
+  let distanceValue = 0; // 初始位移，可以根据需要调整
 
   function moveCar() {
-    let leftPosition = car.offsetLeft + speed;
+    let leftPosition = car.offsetLeft + speedValue;
     car.style.left = leftPosition + 'px';
 
     // 检查是否超出边界，这里简单处理，你可以根据需要调整
@@ -30,32 +55,52 @@
       car.style.left = '0px';
     }
 
+    // 更新位移长度
+    distanceValue += Math.abs(speedValue);
+    distance.textContent = '车辆位移长度：' + distanceValue + ' 像素';
+
     requestAnimationFrame(moveCar);
   }
 
   // 启动车辆移动
   moveCar();
 
-  // 可以通过修改speed变量来调整速度
-  // 例如，将速度调整为10：speed = 10;
+  // 可以通过修改speedValue变量来调整速度
+  // 例如，将速度调整为10：speedValue = 10;
 
-  // 添加一个事件监听器，当用户按下键盘上的上箭头键或下箭头键时，改变速度
-  document.addEventListener('keydown', function(event) {
-    // 如果按下的是上箭头键，就增加速度
-    if (event.keyCode == 38) {
-      speed += 1;
-    }
-    // 如果按下的是下箭头键，就减少速度
-    if (event.keyCode == 40) {
-      speed -= 1;
-    }
+  // 添加一个事件监听器，当用户点击页面上的加速或刹车按钮时，改变速度
+  increase.addEventListener('click', function() {
+    speedValue += 1;
     // 限制速度的范围，避免速度过大或过小
-    if (speed > 20) {
-      speed = 20;
+    if (speedValue > 20) {
+      speedValue = 20;
     }
-    if (speed < -20) {
-      speed = -20;
+    // 更新速度输入框的值
+    speed.value = speedValue;
+  });
+
+  decrease.addEventListener('click', function() {
+    speedValue -= 1;
+    // 限制速度的范围，避免速度过大或过小
+    if (speedValue < -20) {
+      speedValue = -20;
     }
+    // 更新速度输入框的值
+    speed.value = speedValue;
+  });
+
+  // 添加一个事件监听器，当用户在速度输入框中输入值时，改变速度
+  speed.addEventListener('change', function() {
+    speedValue = Number(speed.value);
+    // 限制速度的范围，避免速度过大或过小
+    if (speedValue > 20) {
+      speedValue = 20;
+    }
+    if (speedValue < -20) {
+      speedValue = -20;
+    }
+    // 更新速度输入框的值
+    speed.value = speedValue;
   });
 </script>
 

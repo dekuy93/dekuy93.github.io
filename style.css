@@ -4,11 +4,3 @@
     background-color: blue;
     position: absolute;
 }
-#bar { // 这是位移条的样式
-    width: 0px; // 初始宽度为0
-    height: 10px; // 高度为10像素
-    background-color: red; // 颜色为红色
-    position: absolute; // 绝对定位
-    top: 40px; // 距离顶部40像素
-    left: 0px; // 距离左边0像素
-}

@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        #object {
+        #car {
             width: 50px;
-            height: 50px;
-            background-color: red;
+            height: 30px;
+            background-color: blue;
             position: absolute;
         }
     </style>
@@ -20,46 +20,58 @@
 <div>
     摩擦力: <input type="number" id="friction" value="0.02">
 </div>
-<button id="startButton">开始</button>
+<button id="accelerateButton">加速</button>
+<button id="decelerateButton">减速</button>
 <button id="stopButton">停止</button>
 
-<div id="object"></div>
+<div id="car"></div>
 
 <script>
-    const object = document.getElementById('object');
+    const car = document.getElementById('car');
     const velocityInput = document.getElementById('velocity');
     const frictionInput = document.getElementById('friction');
-    const startButton = document.getElementById('startButton');
+    const accelerateButton = document.getElementById('accelerateButton');
+    const decelerateButton = document.getElementById('decelerateButton');
     const stopButton = document.getElementById('stopButton');
 
     let velocity = parseFloat(velocityInput.value) || 5;
     let friction = parseFloat(frictionInput.value) || 0.02;
 
-    function moveObject() {
-        let position = parseInt(getComputedStyle(object).left, 10);
-        if (position < window.innerWidth - object.clientWidth) {
-            // 物体在可移动范围内
+    function moveCar() {
+        let position = parseInt(getComputedStyle(car).left, 10);
+        if (position < window.innerWidth - car.clientWidth) {
+            // 车辆在可移动范围内
             position += velocity;
             velocity -= friction;
-            object.style.left = position + 'px';
-            requestAnimationFrame(moveObject);
+            car.style.left = position + 'px';
+            requestAnimationFrame(moveCar);
         } else {
-            // 物体停止
+            // 车辆停止
             velocity = 0;
         }
+    }
+
+    function accelerate() {
+        velocity += 1; // 可根据需要调整加速度
+    }
+
+    function decelerate() {
+        velocity -= 1; // 可根据需要调整减速度
     }
 
     function startAnimation() {
         velocity = parseFloat(velocityInput.value) || 5;
         friction = parseFloat(frictionInput.value) || 0.02;
-        moveObject();
+        moveCar();
     }
 
-    startButton.addEventListener('click', startAnimation);
-
+    accelerateButton.addEventListener('click', accelerate);
+    decelerateButton.addEventListener('click', decelerate);
     stopButton.addEventListener('click', () => {
         velocity = 0;
     });
+
+    startAnimation();
 </script>
 
 </body>

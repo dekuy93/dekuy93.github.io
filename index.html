@@ -32,22 +32,44 @@
 <div id="buttons">
   <button id="increase">加速</button>
   <button id="decrease">刹车</button>
-  <input id="speed" type="number" value="5" min="-20" max="20"> 像素/帧
+  <input id="speed" type="number" value="5" min="-20" max="20"> 米/秒
+  <button id="auto-increase">自动加速</button>
+  <button id="auto-decrease">自动减速</button>
+  <button id="stop">关闭</button>
+  <input id="delta" type="number" value="0.1" min="-1" max="1"> 米/秒/帧
+  <span id="status">当前状态：无</span>
 </div>
 
-<div id="distance">车辆位移长度：0 像素</div>
+<div id="distance">车辆位移长度：0 米</div>
 
 <script>
   let car = document.getElementById('car');
   let increase = document.getElementById('increase');
   let decrease = document.getElementById('decrease');
   let speed = document.getElementById('speed');
+  let autoIncrease = document.getElementById('auto-increase');
+  let autoDecrease = document.getElementById('auto-decrease');
+  let stop = document.getElementById('stop');
+  let delta = document.getElementById('delta');
+  let status = document.getElementById('status');
   let distance = document.getElementById('distance');
   let speedValue = 5; // 初始速度，可以根据需要调整
   let distanceValue = 0; // 初始位移，可以根据需要调整
+  let autoMode = false; // 是否开启自动模式
+  let autoDirection = 0; // 自动模式的方向，1表示加速，-1表示减速，0表示无
+
+  // 设定像素和米之间的比例，比如说，一个像素代表多少米
+  // 这个比例可以根据你的需要调整，但是要注意，如果比例太大或太小，可能会导致车辆的移动速度过快或过慢，或者超出屏幕的范围
+  let pixelToMeter = 0.01; // 这里假设一个像素代表0.01米，即100像素代表1米
+
+  // 设定帧和秒之间的比例，比如说，一帧代表多少秒
+  // 这个比例可以根据你的需要调整，但是要注意，如果比例太大或太小，可能会导致车辆的移动速度过快或过慢，或者超出屏幕的范围
+  let frameToSecond = 0.02; // 这里假设一帧代表0.02秒，即50帧代表1秒
 
   function moveCar() {
-    let leftPosition = car.offsetLeft + speedValue;
+    // 根据速度值和比例，计算每一帧车辆移动的像素数
+    let pixelPerFrame = speedValue * frameToSecond / pixelToMeter;
+    let leftPosition = car.offsetLeft + pixelPerFrame;
     car.style.left = leftPosition + 'px';
 
     // 检查是否超出边界，这里简单处理，你可以根据需要调整
@@ -55,9 +77,30 @@
       car.style.left = '0px';
     }
 
-    // 更新位移长度
-    distanceValue += Math.abs(speedValue);
-    distance.textContent = '车辆位移长度：' + distanceValue + ' 像素';
+    // 更新位移长度，根据比例，将像素转换为米
+    distanceValue += Math.abs(pixelPerFrame) * pixelToMeter;
+    distance.textContent = '车辆位移长度：' + distanceValue.toFixed(2) + ' 米';
+
+    // 如果开启了自动模式，根据方向和幅度，改变速度值
+    if (autoMode) {
+      speedValue += autoDirection * Number(delta.value);
+      // 限制速度的范围，避免速度过大或过小
+      if (speedValue > 20) {
+        speedValue = 20;
+      }
+      if (speedValue < -20) {
+        speedValue = -20;
+      }
+      // 更新速度输入框的值
+      speed.value = speedValue;
+
+      // 如果速度值为零，就停止自动模式，并将方向设为无
+      if (speedValue == 0) {
+        autoMode = false;
+        autoDirection = 0;
+        status.textContent = '当前状态：无';
+      }
+    }
 
     requestAnimationFrame(moveCar);
   }
@@ -101,6 +144,42 @@
     }
     // 更新速度输入框的值
     speed.value = speedValue;
+  });
+
+  // 添加一个事件监听器，当用户点击页面上的自动加速或自动减速按钮时，开启或关闭自动模式，并改变方向
+  autoIncrease.addEventListener('click', function() {
+    // 如果当前是自动减速模式，就关闭自动模式
+    if (autoMode && autoDirection == -1) {
+      autoMode = false;
+      autoDirection = 0;
+      status.textContent = '当前状态：无';
+    } else {
+      // 否则，就开启自动加速模式
+      autoMode = true;
+      autoDirection = 1;
+      status.textContent = '当前状态：自动加速';
+    }
+  });
+
+  autoDecrease.addEventListener('click', function() {
+    // 如果当前是自动加速模式，就关闭自动模式
+    if (autoMode && autoDirection == 1) {
+      autoMode = false;
+      autoDirection = 0;
+      status.textContent = '当前状态：无';
+    } else {
+      // 否则，就开启自动减速模式
+      autoMode = true;
+      autoDirection = -1;
+      status.textContent = '当前状态：自动减速';
+    }
+  });
+
+  // 添加一个事件监听器，当用户点击页面上的关闭按钮时，停止自动模式，并将方向设为无
+  stop.addEventListener('click', function() {
+    autoMode = false;
+    autoDirection = 0;
+    status.textContent = '当前状态：无';
   });
 </script>
 

@@ -18,8 +18,13 @@
 
 <script>
     const object = document.getElementById('object');
-    let velocity = 5; // 初始速度
-    let friction = 0.02; // 摩擦力
+    let velocityInput = document.getElementById('velocity');
+    let frictionInput = document.getElementById('friction');
+    let startButton = document.getElementById('startButton');
+    let stopButton = document.getElementById('stopButton');
+
+    let velocity = parseFloat(velocityInput.value) || 5;
+    let friction = parseFloat(frictionInput.value) || 0.02;
 
     function moveObject() {
         let position = parseInt(getComputedStyle(object).left, 10);
@@ -35,9 +40,26 @@
         }
     }
 
-    // 启动动画
-    moveObject();
+    function startAnimation() {
+        velocity = parseFloat(velocityInput.value) || 5;
+        friction = parseFloat(frictionInput.value) || 0.02;
+        moveObject();
+    }
+
+    startButton.addEventListener('click', startAnimation);
+
+    stopButton.addEventListener('click', () => {
+        velocity = 0;
+    });
 </script>
+<div>
+    初始速度: <input type="number" id="velocity" value="5">
+</div>
+<div>
+    摩擦力: <input type="number" id="friction" value="0.02">
+</div>
+<button id="startButton">开始</button>
+<button id="stopButton">停止</button>
 
 </body>
 </html>

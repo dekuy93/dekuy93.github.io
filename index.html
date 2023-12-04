@@ -1,26 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css"> // 这是引用CSS文件的标签，用来设置页面的样式
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    #car {
+      width: 50px;
+      height: 50px;
+      background-color: blue;
+      position: absolute;
+    }
+  </style>
+  <title>可调速度车辆模拟</title>
 </head>
 <body>
 
-<div>
-    初始速度: <input type="number" id="velocity" value="5">
-</div>
-<div>
-    摩擦力: <input type="number" id="friction" value="0.02">
-</div>
-<button id="accelerateButton">加速</button>
-<button id="decelerateButton">减速</button>
-<button id="stopButton">停止</button>
-
 <div id="car"></div>
-<div id="bar"></div>
 
-<script src="script.js"></script> // 这是引用JavaScript文件的标签，用来实现页面的功能和交互
+<script>
+  let car = document.getElementById('car');
+  let speed = 5; // 初始速度，可以根据需要调整
+
+  function moveCar() {
+    let leftPosition = car.offsetLeft + speed;
+    car.style.left = leftPosition + 'px';
+
+    // 检查是否超出边界，这里简单处理，你可以根据需要调整
+    if (leftPosition > window.innerWidth) {
+      car.style.left = '0px';
+    }
+
+    requestAnimationFrame(moveCar);
+  }
+
+  // 启动车辆移动
+  moveCar();
+
+  // 可以通过修改speed变量来调整速度
+  // 例如，将速度调整为10：speed = 10;
+
+  // 添加一个事件监听器，当用户按下键盘上的上箭头键或下箭头键时，改变速度
+  document.addEventListener('keydown', function(event) {
+    // 如果按下的是上箭头键，就增加速度
+    if (event.keyCode == 38) {
+      speed += 1;
+    }
+    // 如果按下的是下箭头键，就减少速度
+    if (event.keyCode == 40) {
+      speed -= 1;
+    }
+    // 限制速度的范围，避免速度过大或过小
+    if (speed > 20) {
+      speed = 20;
+    }
+    if (speed < -20) {
+      speed = -20;
+    }
+  });
+</script>
 
 </body>
 </html>

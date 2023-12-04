@@ -22,6 +22,12 @@
     #distance {
       margin-top: 10px;
     }
+    #auto-stop {
+      background-color: gray;
+    }
+    #auto-stop.on {
+      background-color: green;
+    }
   </style>
   <title>可调速度车辆模拟</title>
 </head>
@@ -35,7 +41,7 @@
   <input id="speed" type="number" value="5" min="-20" max="20"> 米/秒
   <button id="auto-increase">自动加速</button>
   <button id="auto-decrease">自动减速</button>
-  <button id="stop">关闭</button>
+  <button id="auto-stop">自动停止</button>
   <input id="delta" type="number" value="0.1" min="-1" max="1"> 米/秒/帧
   <span id="status">当前状态：无</span>
 </div>
@@ -49,7 +55,7 @@
   let speed = document.getElementById('speed');
   let autoIncrease = document.getElementById('auto-increase');
   let autoDecrease = document.getElementById('auto-decrease');
-  let stop = document.getElementById('stop');
+  let autoStop = document.getElementById('auto-stop');
   let delta = document.getElementById('delta');
   let status = document.getElementById('status');
   let distance = document.getElementById('distance');
@@ -57,6 +63,7 @@
   let distanceValue = 0; // 初始位移，可以根据需要调整
   let autoMode = false; // 是否开启自动模式
   let autoDirection = 0; // 自动模式的方向，1表示加速，-1表示减速，0表示无
+  let autoStopMode = false; // 是否开启自动停止功能
 
   // 设定像素和米之间的比例，比如说，一个像素代表多少米
   // 这个比例可以根据你的需要调整，但是要注意，如果比例太大或太小，可能会导致车辆的移动速度过快或过慢，或者超出屏幕的范围
@@ -94,8 +101,8 @@
       // 更新速度输入框的值
       speed.value = speedValue;
 
-      // 如果速度值为零，就停止自动模式，并将方向设为无
-      if (speedValue == 0) {
+      // 如果开启了自动停止功能，并且速度值为零，就停止自动模式，并将方向设为无
+      if (autoStopMode && speedValue == 0) {
         autoMode = false;
         autoDirection = 0;
         status.textContent = '当前状态：无';
@@ -146,15 +153,14 @@
     speed.value = speedValue;
   });
 
-  // 添加一个事件监听器，当用户点击页面上的自动加速或自动减速按钮时，开启或关闭自动模式，并改变方向
+  // 添加一个事件监听器，当用户点击页面上的自动加速或自动减速按钮时，切换自动模式，并改变方向
   autoIncrease.addEventListener('click', function() {
-    // 如果当前是自动减速模式，就关闭自动模式
+    // 如果当前是自动减速模式，就切换为自动加速模式
     if (autoMode && autoDirection == -1) {
-      autoMode = false;
-      autoDirection = 0;
-      status.textContent = '当前状态：无';
-    } else {
-      // 否则，就开启自动加速模式
+      autoDirection = 1;
+      status.textContent = '当前状态：自动加速';
+    } else if (!autoMode) {
+      // 否则，如果当前是无模式，就开启自动加速模式
       autoMode = true;
       autoDirection = 1;
       status.textContent = '当前状态：自动加速';
@@ -162,24 +168,29 @@
   });
 
   autoDecrease.addEventListener('click', function() {
-    // 如果当前是自动加速模式，就关闭自动模式
+    // 如果当前是自动加速模式，就切换为自动减速模式
     if (autoMode && autoDirection == 1) {
-      autoMode = false;
-      autoDirection = 0;
-      status.textContent = '当前状态：无';
-    } else {
-      // 否则，就开启自动减速模式
+      autoDirection = -1;
+      status.textContent = '当前状态：自动减速';
+    } else if (!autoMode) {
+      // 否则，如果当前是无模式，就开启自动减速模式
       autoMode = true;
       autoDirection = -1;
       status.textContent = '当前状态：自动减速';
     }
   });
 
-  // 添加一个事件监听器，当用户点击页面上的关闭按钮时，停止自动模式，并将方向设为无
-  stop.addEventListener('click', function() {
-    autoMode = false;
-    autoDirection = 0;
-    status.textContent = '当前状态：无';
+  // 添加一个事件监听器，当用户点击页面上的自动停止按钮时，开启或关闭自动停止功能
+  autoStop.addEventListener('click', function() {
+    // 如果当前是开启状态，就关闭自动停止功能，并将按钮颜色设为灰色
+    if (autoStopMode) {
+      autoStopMode = false;
+      autoStop.classList.remove('on');
+    } else {
+      // 否则，就开启自动停止功能，并将按钮颜色设为绿色
+      autoStopMode = true;
+      autoStop.classList.add('on');
+    }
   });
 </script>
 

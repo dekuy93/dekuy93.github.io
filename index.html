@@ -9,6 +9,7 @@
       height: 50px;
       background-color: blue;
       position: absolute;
+      top: 100px; // 将车辆的位置往下移一点，避免挡住按钮
     }
     #buttons {
       display: flex;
@@ -29,7 +30,7 @@
       background-color: green;
     }
   </style>
-  <title>可调速度车辆模拟</title>
+  <title>可调速度火车模拟</title> <!-- 将标题改成火车相关的 -->
 </head>
 <body>
 
@@ -38,15 +39,18 @@
 <div id="buttons">
   <button id="increase">加速</button>
   <button id="decrease">刹车</button>
-  <input id="speed" type="number" value="5" min="-20" max="20"> 米/秒
+  <button id="halt">停止</button> <!-- 将停止按钮放在刹车按钮旁边 -->
+  <input id="speed" type="number" value="5" min="-100" max="100"> 米/秒 <!-- 将速度最大值改成100米/秒 -->
   <button id="auto-increase">自动加速</button>
   <button id="auto-decrease">自动减速</button>
+  <button id="stop">关闭</button>
   <button id="auto-stop">自动停止</button>
+  <button id="reset">回位</button> <!-- 添加一个回位按钮，直接把路程长度变为0 -->
   <input id="delta" type="number" value="0.1" min="-1" max="1"> 米/秒/帧
   <span id="status">当前状态：无</span>
 </div>
 
-<div id="distance">车辆位移长度：0 米</div>
+<div id="distance">火车路程长度：0 米</div> <!-- 将位移长度的文本改成火车相关的 -->
 
 <script>
   let car = document.getElementById('car');
@@ -55,7 +59,10 @@
   let speed = document.getElementById('speed');
   let autoIncrease = document.getElementById('auto-increase');
   let autoDecrease = document.getElementById('auto-decrease');
+  let stop = document.getElementById('stop');
   let autoStop = document.getElementById('auto-stop');
+  let halt = document.getElementById('halt'); // 获取停止按钮的元素
+  let reset = document.getElementById('reset'); // 获取回位按钮的元素
   let delta = document.getElementById('delta');
   let status = document.getElementById('status');
   let distance = document.getElementById('distance');
@@ -84,28 +91,30 @@
       car.style.left = '0px';
     }
 
-    // 更新位移长度，根据比例，将像素转换为米
-    distanceValue += Math.abs(pixelPerFrame) * pixelToMeter;
-    distance.textContent = '车辆位移长度：' + distanceValue.toFixed(2) + ' 米';
+    // 更新路程长度，根据比例，将像素转换为米
+    // 如果车辆向右移动，路程长度增加，如果车辆向左移动，路程长度减少
+    distanceValue += pixelPerFrame * pixelToMeter;
+    distance.textContent = '火车路程长度：' + distanceValue.toFixed(2) + ' 米';
 
     // 如果开启了自动模式，根据方向和幅度，改变速度值
     if (autoMode) {
       speedValue += autoDirection * Number(delta.value);
       // 限制速度的范围，避免速度过大或过小
-      if (speedValue > 20) {
-        speedValue = 20;
+      if (speedValue > 100) {
+        speedValue = 100;
       }
-      if (speedValue < -20) {
-        speedValue = -20;
+      if (speedValue < -100) {
+        speedValue = -100;
       }
       // 更新速度输入框的值
       speed.value = speedValue;
 
-      // 如果开启了自动停止功能，并且速度值为零，就停止自动模式，并将方向设为无
-      if (autoStopMode && speedValue == 0) {
+      // 如果开启了自动停止功能，并且速度值在-0.5到0.5米/秒之间，就停止自动模式，并将方向设为无，并点击关闭按钮
+      if (autoStopMode && speedValue >= -0.5 && speedValue <= 0.5) {
         autoMode = false;
         autoDirection = 0;
         status.textContent = '当前状态：无';
+        stop.click(); // 调用关闭按钮
       }
     }
 
@@ -122,8 +131,8 @@
   increase.addEventListener('click', function() {
     speedValue += 1;
     // 限制速度的范围，避免速度过大或过小
-    if (speedValue > 20) {
-      speedValue = 20;
+    if (speedValue > 100) {
+      speedValue = 100;
     }
     // 更新速度输入框的值
     speed.value = speedValue;
@@ -132,8 +141,8 @@
   decrease.addEventListener('click', function() {
     speedValue -= 1;
     // 限制速度的范围，避免速度过大或过小
-    if (speedValue < -20) {
-      speedValue = -20;
+    if (speedValue < -100) {
+      speedValue = -100;
     }
     // 更新速度输入框的值
     speed.value = speedValue;
@@ -143,11 +152,11 @@
   speed.addEventListener('change', function() {
     speedValue = Number(speed.value);
     // 限制速度的范围，避免速度过大或过小
-    if (speedValue > 20) {
-      speedValue = 20;
+    if (speedValue > 100) {
+      speedValue = 100;
     }
-    if (speedValue < -20) {
-      speedValue = -20;
+    if (speedValue < -100) {
+      speedValue = -100;
     }
     // 更新速度输入框的值
     speed.value = speedValue;
@@ -155,7 +164,7 @@
 
   // 添加一个事件监听器，当用户点击页面上的自动加速或自动减速按钮时，切换自动模式，并改变方向
   autoIncrease.addEventListener('click', function() {
-    // 如果当前是自动减速模式，就切换为自动加速模式
+        // 如果当前是自动减速模式，就切换为自动加速模式
     if (autoMode && autoDirection == -1) {
       autoDirection = 1;
       status.textContent = '当前状态：自动加速';
@@ -180,6 +189,13 @@
     }
   });
 
+  // 添加一个事件监听器，当用户点击页面上的关闭按钮时，停止自动模式，并将方向设为无
+  stop.addEventListener('click', function() {
+    autoMode = false;
+    autoDirection = 0;
+    status.textContent = '当前状态：无';
+  });
+
   // 添加一个事件监听器，当用户点击页面上的自动停止按钮时，开启或关闭自动停止功能
   autoStop.addEventListener('click', function() {
     // 如果当前是开启状态，就关闭自动停止功能，并将按钮颜色设为灰色
@@ -191,6 +207,22 @@
       autoStopMode = true;
       autoStop.classList.add('on');
     }
+  });
+
+  // 添加一个事件监听器，当用户点击页面上的停止按钮时，直接把速度值设为0
+  halt.addEventListener('click', function() {
+    speedValue = 0;
+    // 更新速度输入框的值
+    speed.value = speedValue;
+  });
+
+  // 添加一个事件监听器，当用户点击页面上的回位按钮时，直接把路程长度设为0，并将车辆位置重置
+  reset.addEventListener('click', function() {
+    distanceValue = 0;
+    // 更新路程长度的文本
+    distance.textContent = '火车路程长度：' + distanceValue.toFixed(2) + ' 米';
+    // 将车辆位置重置为初始值
+    car.style.left = '0px';
   });
 </script>
 

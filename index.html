@@ -42,7 +42,9 @@
         if (position < window.innerWidth - car.clientWidth) {
             // 车辆在可移动范围内
             position += velocity;
-            velocity -= friction;
+            if (velocity > 0) { // 只有速度大于0的时候才减去摩擦力
+                velocity -= friction;
+            }
             car.style.left = position + 'px';
             requestAnimationFrame(moveCar);
         } else {

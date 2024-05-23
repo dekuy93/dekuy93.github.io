@@ -2,123 +2,124 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>无标题文档</title>
+<title>定位</title>
 <style type="text/css">
-	body{
-		background-image: url(images/bg5.jpg);
-		background-repeat: no-repeat;
-		background-size: cover;
+	body,ul{
+		padding: 0;
+		margin: 0;
 	}
-	.list{
-		position: relative;
-		
-		
+	ul{
+		list-style: none;
 	}
-	.in{
-		display: inline-block;
-		padding-right: 100px;
-		position: relative
-
+	#page{
+		width: 100%;
+		min-width: 1250px;
+		margin: 0 auto;
 	}
-	.to{
-		position: absolute;
-		left: 20%;
-		padding-top: 20%;
-		
-		
-/*		bottom: 10px*/
+	#page .bg{
+		width: 100%;
+		position: fixed;
+		top: 0;
+		left: 0;
+		z-index: -10;
 	}
-	.one{
-		position: absolute;
-		border-radius: 82.5px;
-		width: 165px;
-		height: 165px;
-		overflow: hidden;
-		border: solid 5px #fff;
-		bottom: 80px;
-		left: 20px;
-/*		box-shadow: 0px 0px 10px 10px white*/
-	}
-	.f{
-		border: solid 5px #fff;
-		border-radius: 30px;
-		width: 200px;
-		height: 120px;
-		background-color: red;
-		text-align: center;
-		color: white;
-		font-size: 1.5em;
-	}
-	.f p{
-		padding-top:50px
-	}
-	
 /*
-	.one{
-		position: absolute;
-	}
-	.two{
-		position: absolute;
-	}
-	.three{
-		position: absolute;
-	}
-	.four{
-		position: absolute;
-	}
-	.five{
-		position: absolute;
+	a:target{
+		z-index: -5;
 	}
 */
+/*
+	a:not(:target){
+		z-index: -10;
+	}
+*/
+	
+	.day-list{
+		margin: 400px auto 0 auto;
+		width: 1000px;
+	}
+	.day-list li{
+		display: inline-block;
+		margin-right: 12px;
+	}
+	.day-list li a{
+		display: block;
+		padding: 60px;
+		padding-bottom: 20px;
+		border: solid 2px #fff;
+		background-color: #8E7576;
+		position: relative;
+		color: #fff;
+		text-decoration: none;
+	}
+	.day-list li:nth-child(2) a{
+		background-color: #f90;
+	}
+	.day-list li a:before{
+		content: "";
+		display: block;
+		width: 120px;
+		height: 120px;
+		border-radius: 50%;
+		border: solid 5px rgba(0,0,0,0.3);
+		position: absolute;
+		top: -100px;
+		left: 50%;
+		transform: translate(-50%,0);
+		background-image: url(images/sbg1.jpg);
+		background-size: 150%;
+		background-position: center;
+		
+	}
+	.day-list li:nth-child(2) a:before{
+		background-image: url(images/sbg2.jpg);
+	}
+	.day-list li:nth-child(3) a:before{
+		background-image: url(images/sbg3.jpg);
+	}
+	.day-list li:nth-child(4) a:before{
+		background-image: url(images/sbg4.jpg);
+	}
+	.day-list li:nth-child(5) a:before{
+		background-image: url(images/sbg5.jpg);
+	}
+	.day-list li a:after{
+		content: "";
+		display: block;
+		width: 120px;
+		height: 120px;
+		border-radius: 50%;
+		border: solid 5px rgba(0,0,0,0.3);
+		position: absolute;
+		top: -100px;
+		left: 50%;
+		transform: translate(-50%,0);
+		background-color: #000;
+		opacity: 0.3;
+	}
+	.day-list li:hover a:after{
+		opacity: 0;
+	}
+	#page .bg:target{z-index:-5;}
+	#page .bg:not(:target){
+		z-index: -10;
+	}
 </style>
 </head>
-
-<body>
-<div class="list">
-	<ul class="to">
-		<li class="in">
-			<div class="one">
-				<a href="">
-					<img src="images/sbg5.jpg" alt="">
-				</a>
-			</div>
-			<div class="f">
-			<p>周一狂躁综合征</p>
-			</div>
-		</li>
-		<li class="in">
-			<div class="one">
-				<a href="">
-					<img src="images/sbg5.jpg" alt="">
-				</a>
-			</div>
-			<div class="f"><p>周一狂躁综合征</p></div>
-		</li>
-		<li class="in">
-			<div class="one">
-				<a href="">
-					<img src="images/sbg5.jpg" alt="">
-				</a>
-			</div>
-			<div class="f"><p>周一狂躁综合征</p></div>
-		</li>
-		<li class="in">
-			<div class="one">
-				<a href="">
-					<img src="images/sbg5.jpg" alt="">
-				</a>
-			</div>
-			<div class="f"><p>周一狂躁综合征</p></div>
-		</li>
-		<li class="in">
-			<div class="one">
-				<a href="">
-					<img src="images/sbg5.jpg" alt="">
-				</a>
-			</div>
-			<div class="f"><p>周一狂躁综合征</p></div>
-		</li>
+<div id="page">
+	<ul class="day-list">
+		<li><a href="#t1">周1</a></li>
+		<li><a href="#t2">周2</a></li>
+		<li><a href="#t3">周3</a></li>
+		<li><a href="#t4">周4</a></li>
+		<li><a href="#t5">周5</a></li>
 	</ul>
+	<img src="images/bg1.jpg" class="bg" id="t1" />
+	<img src="images/bg2.jpg" class="bg" id="t2" />
+	<img src="images/bg3.jpg" class="bg" id="t3" />
+	<img src="images/bg4.jpg" class="bg" id="t4" />
+	<img src="images/bg5.jpg" class="bg" id="t5" />
 </div>
+<body>
 </body>
 </html>
